@@ -1,13 +1,18 @@
 const User = require('../models/User.js')
 const express = require('express')
 const router = express.Router()
+const bcrypt = require('bcryptjs')
 
 router.post('/register', async (req, res) => {
+  const salt = await bcrypt.genSalt(10)
+
+  const hashed = await bcrypt.hash(req.body.password, salt)
+
   const user = new User({
     username: req.body.username,
     name: req.body.name,
     email: req.body.email,
-    password: req.body.password,
+    password: hashed,
     role: req.body.role
   })
 
@@ -30,7 +35,7 @@ router.post('/login', async (req, res) => {
     email: req.body.email
   })
   if (!loggedUser) return res.status(400).send('Email not found')
-  const validPass = req.body.password === loggedUser.password
+  const validPass = await bcrypt.compare(req.body.password, loggedUser.password)
   if (!validPass) return res.status(400).send('invalid Password')
   res.send('Logged')
 })
