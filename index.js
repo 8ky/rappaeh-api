@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
 const postsRoute = require('./routes/posts.js')
+const authRoute = require('./routes/auth.js')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 
@@ -10,6 +11,7 @@ require('dotenv/config')
 app.listen(3000)
 app.use(cors())
 app.use(bodyParser.json())
+app.use('/user', authRoute)
 app.use('/posts', postsRoute)
 
 mongoose.connect(
