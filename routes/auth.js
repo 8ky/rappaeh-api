@@ -10,6 +10,13 @@ router.post('/register', async (req, res) => {
     password: req.body.password,
     role: req.body.role
   })
+
+  const emailExists = await User.findOne({
+    email: req.body.email
+  })
+
+  if (emailExists) return res.status(400).send('Email Exists')
+
   try {
     const registeredUser = await user.save()
     res.json(registeredUser)
