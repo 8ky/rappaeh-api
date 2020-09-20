@@ -2,6 +2,7 @@ const User = require('../models/User.js')
 const express = require('express')
 const router = express.Router()
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 router.post('/register', async (req, res) => {
   const salt = await bcrypt.genSalt(10)
@@ -37,7 +38,12 @@ router.post('/login', async (req, res) => {
   if (!loggedUser) return res.status(400).send('Email not found')
   const validPass = await bcrypt.compare(req.body.password, loggedUser.password)
   if (!validPass) return res.status(400).send('invalid Password')
-  res.send('Logged')
+
+  const token = jwt.sign({ _id: loggedUser._id }, process.env.TOKEN_SECRET)
+
+  res.header('auth-token', token)
+
+  res.send(`Logged ${token}`)
 })
 
 module.exports = router
