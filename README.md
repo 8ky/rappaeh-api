@@ -1,2 +1,2 @@
-# rappaeh-api
-API Rest do blog Rappaeh
+# kyblogz-api
+REST API for New School Rappers' Blog
